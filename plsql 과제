@@ -1,0 +1,119 @@
+1. 숫자 입력받아 해당 숫자의 구구단 출력
+입력 : 3
+결과
+3*1=3
+  :
+3*9=27
+
+declare
+ x number := '&x';
+begin
+dbms_output.put_line(x || '*' || 1 || '=' || (x*1));
+dbms_output.put_line(x || '*' || 2 || '=' || (x*2));
+dbms_output.put_line(x || '*' || 3 || '=' || (x*3));
+dbms_output.put_line(x || '*' || 4 || '=' || (x*4));
+dbms_output.put_line(x || '*' || 5 || '=' || (x*5));
+dbms_output.put_line(x || '*' || 6 || '=' || (x*6));
+dbms_output.put_line(x || '*' || 7 || '=' || (x*7));
+dbms_output.put_line(x || '*' || 8 || '=' || (x*8));
+dbms_output.put_line(x || '*' || 9 || '=' || (x*9));
+end;
+/
+
+-------------------------------------------------------------------
+2. customer 테이블에서 가장 큰 no값 찾아
+no+1 값으로 한줄 삽입하기
+
+declare
+ max number;
+
+begin
+ select max(no)
+ into max
+ from customer;
+
+ insert into customer
+ values(max+1,'우기','서울');
+
+end;
+/
+
+-------------------------------------------------------------------
+3. customer 테이블을 이용
+입력받은 no를 조건으로 입력받은 name, 입력받은 addr 수정하기 
+
+declare
+ vno number := '&no';
+ vname varchar2(15) := '&name'; --' ' 쓸 필요가 없음!!!
+ vaddr varchar2(15) := '&addr';
+
+begin
+ update customer
+ set name = vname, addr = vaddr
+ where no = vno;
+
+end;
+/
+
+-------------------------------------------------------------------
+4. book 테이블 이용
+title 입력 : 인어공주
+3 인어공주           82/01/24      3000
+
+80년대 출간 : 20% 할인
+90년대 출간 : 10% 할인
+그 밖의 년대 : 5%할인
+3 인어공주           82/01/24      3000  2400
+
+
+declare
+ vtitle varchar2(20) := '&title';
+ vno number;
+ vday date; --
+ vprice number;
+ slae number;
+
+begin
+select no, title, day, price
+into vno, vtitle, vday, vprice
+from book
+where title = vtitle;
+
+if vday like '8%' then
+ sale := vprice*0.8; --식별자가 정의 되어야 한다고?
+elsif vday like '9%' then
+ sale := vprice*0.9;
+else
+ sale := vprice*0.95;
+end if;
+
+dbms_output.put_line(vno || ',' || vtitle || ',' || vday || ',' || vprice || ',' || sale);
+
+end;
+/
+
+
+declare
+	vno number;
+	vtitle varchar2(20) := '&title';
+	vprice number;
+	vday date;
+	discount number;
+begin
+	select no, title, day, price
+	into vno ,vtitle, vday, vprice
+	from book
+	where title = vtitle;
+
+	if vday like '8%'then
+	  discount := vprice * 0.8;
+	elsif vday like '9%' then
+	discount := vprice * 0.9;
+	else
+	  discount := vprice * 0.95;
+
+	end if;
+
+	dbms_output.put_line(vno || ' ' || vtitle || ' ' || vday || ' ' || vprice || ' ' ||discount);
+end;
+/
